@@ -3,11 +3,11 @@
 //----------------------------------------------------------------------------
 
 module mux_2_1_width_1
-(
-  input  d0, d1,
-  input  sel,
-  output y
-);
+  (
+    input  d0, d1,
+    input  sel,
+    output y
+  );
 
   assign y = (d0 & ~ sel) | (d1 & sel);
 
@@ -16,28 +16,28 @@ endmodule
 //----------------------------------------------------------------------------
 
 module mux_2_1_width_2
-(
-  input  [1:0] d0, d1,
-  input        sel,
-  output [1:0] y
-);
+  (
+    input  [1:0] d0, d1,
+    input        sel,
+    output [1:0] y
+  );
 
   // { 2 { a } } is the same as { a, a }
   // { 4 { a } } is the same as { a, a, a, a }
 
   assign y =   (d0 & { 2 { ~ sel }})
-             | (d1 & { 2 {   sel }});
+         | (d1 & { 2 {   sel }});
 
 endmodule
 
 //----------------------------------------------------------------------------
 
 module mux_4_1_width_1
-(
-  input        d0, d1, d2, d3,
-  input  [1:0] sel,
-  output       y
-);
+  (
+    input        d0, d1, d2, d3,
+    input  [1:0] sel,
+    output       y
+  );
 
   wire sel0 = ~ sel [0] & ~ sel [1];
   wire sel1 =   sel [0] & ~ sel [1];
@@ -45,9 +45,9 @@ module mux_4_1_width_1
   wire sel3 =   sel [0] &   sel [1];
 
   assign y =   (d0 & sel0)
-             | (d1 & sel1)
-             | (d2 & sel2)
-             | (d3 & sel3);
+         | (d1 & sel1)
+         | (d2 & sel2)
+         | (d3 & sel3);
 
 endmodule
 
@@ -56,16 +56,23 @@ endmodule
 //----------------------------------------------------------------------------
 
 module mux_4_1
-(
-  input  [3:0] d0, d1, d2, d3,
-  input  [1:0] sel,
-  output [3:0] y
-);
+  (
+    input  [3:0] d0, d1, d2, d3,
+    input  [1:0] sel,
+    output [3:0] y
+  );
 
   // Task:
   // Using code for mux_2_1_width_1, mux_2_1_width_2,
   // mux_4_1_width_1 as examples,
   // write code for 4:1 mux using only &, | and ~ operations.
+  wire s00 = ~sel[1] & ~sel[0];
+  wire s01 = ~sel[1] &  sel[0];
+  wire s10 =  sel[1] & ~sel[0];
+  wire s11 =  sel[1] &  sel[0];
 
-
+  assign y = (d0 & {4{s00}})
+         | (d1 & {4{s01}})
+         | (d2 & {4{s10}})
+         | (d3 & {4{s11}});
 endmodule
